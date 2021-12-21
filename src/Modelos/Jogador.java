@@ -28,4 +28,13 @@ public class Jogador {
         return peca;
     }
 
+    @Override
+    public String toString() {
+        String ret = "";
+        ret += "Jogador {" + this.nome +
+                ", peça = " + peca +
+                ", pontos = " + pontos +
+                '}';
+        return ret;
+    }
 }
