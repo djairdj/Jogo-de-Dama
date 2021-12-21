@@ -1,12 +1,12 @@
 package Teste;
 
-import Modelos.Pecas;
+import Modelos.Peca;
 
 public class TesteEnum {
     public static void main(String[] args) {
-        System.out.println(Pecas.PecaPreta);
-        System.out.println(Pecas.PecaBranca);
-        System.out.println(Pecas.DamaPreta);
-        System.out.println(Pecas.DamaBranca);
+        System.out.println(Peca.PecaPreta);
+        System.out.println(Peca.PecaBranca);
+        System.out.println(Peca.DamaPreta);
+        System.out.println(Peca.DamaBranca);
     }
 }
