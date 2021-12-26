@@ -9,6 +9,7 @@ public class Tabuleiro {
         this.tabuleiro = new char[8][8];
         this.pedraBranca = pecaBranca;
         this.pedraPreta = pecaPreta;
+        this.zeraTabuleiro();
     }
 
     public void zeraTabuleiro() {
@@ -34,6 +35,10 @@ public class Tabuleiro {
                 }
             }
         }
+    }
+
+    public char[][] getTabuleiro() {
+        return tabuleiro;
     }
 
     private String tabuleiro() {
