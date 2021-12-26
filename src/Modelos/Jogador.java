@@ -2,11 +2,11 @@ package Modelos;
 
 public class Jogador {
 
-    private final Peca peca;
+    private final Peca[] peca;
     private final String nome;
     private int pontos;
 
-    public Jogador(String name, Peca peca) {
+    public Jogador(String name, Peca... peca) {
         this.peca = peca;
         this.nome = name;
         this.pontos = 0;
@@ -24,16 +24,25 @@ public class Jogador {
         return this.nome;
     }
 
-    public Peca getPeca() {
+    public Peca[] getPecas() {
         return peca;
+    }
+
+    public Peca peca() {
+        return this.getPecas()[0];
+    }
+
+    public Peca dama() {
+        return this.getPecas()[1];
     }
 
     @Override
     public String toString() {
         String ret = "";
-        ret += "Jogador {" + this.nome +
-                ", peça = " + peca +
-                ", pontos = " + pontos +
+        ret += "Jogador {" + this.nome;
+        ret += ", peça = " + peca[0];
+        ret += ", dama = " + peca[1];
+        ret += ", pontos = " + pontos +
                 '}';
         return ret;
     }
