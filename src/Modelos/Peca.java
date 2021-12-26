@@ -1,7 +1,9 @@
 package Modelos;
 
 public enum Peca {
-    PecaBranca('○'), PecaPreta('●'), DamaBranca('░'), DamaPreta('▇');
+    // Algumas opções:
+    // '●' '◇' '◆'
+    PecaBranca('□'), PecaPreta('■'), DamaBranca('░'), DamaPreta('▇');
 
     public final char peca;
 
