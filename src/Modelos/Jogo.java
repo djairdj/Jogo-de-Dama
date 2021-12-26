@@ -1,5 +1,6 @@
 package Modelos;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Jogo {
@@ -16,6 +17,27 @@ public class Jogo {
         this.nJogadas = 0;
         this.nPecasBrancas = 12;
         this.nPecasPretas = 12;
+    }
+
+    public void jogar() {
+        System.out.println("Bem vindo ao jogo de dama.");
+        System.out.print("Caso queira iniciar, digite 1: ");
+        String escolha = sc.nextLine();
+        while (escolha.equals("1")) {
+            // A variável nJogada já vale 0 (inicialmente) e cada mudança de jogador ela deve ser incrementada.
+            setJogadores();
+            while (nPecasBrancas != 0 && nPecasPretas != 0) {
+                System.out.printf("Quem joga agora é %s, as peças podem ser: %s.%n", jogadores[nJogadas].getNome(), Arrays.toString(jogadores[nJogadas].getPecas()));
+
+                break;
+            }
+            System.out.println(toString());
+            System.out.print("Digite 1 para iniciar um novo jogo: ");
+            escolha = sc.nextLine();
+            if (!escolha.equals("1")) {
+                System.out.println("Até a próxima.");
+            }
+        }
     }
 
     private void setJogadores() {  // Pronto
