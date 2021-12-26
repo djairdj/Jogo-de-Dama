@@ -1,7 +1,7 @@
 package Modelos;
 
 public enum Peca {
-    // Algumas opções:
+    // Algumas opções para peças:
     // '●' '◇' '◆'
     PecaBranca('□'), PecaPreta('■'), DamaBranca('░'), DamaPreta('▇');
 
