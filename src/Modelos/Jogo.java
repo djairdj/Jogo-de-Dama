@@ -10,6 +10,7 @@ public class Jogo {
     private int nJogadas;
     private int nPecasBrancas;
     private int nPecasPretas;
+    private int lOrigem, cOrigem, lDestino, cDestino;
 
     public Jogo() {
         this.jogadores = new Jogador[2];
@@ -28,7 +29,7 @@ public class Jogo {
             setJogadores();
             while (nPecasBrancas != 0 && nPecasPretas != 0) {
                 System.out.printf("Quem joga agora é %s, as peças podem ser: %s.%n", jogadores[nJogadas].getNome(), Arrays.toString(jogadores[nJogadas].getPecas()));
-
+                defineOrigem(jogadores[nJogadas]);
                 break;
             }
             System.out.println(toString());
@@ -38,6 +39,25 @@ public class Jogo {
                 System.out.println("Até a próxima.");
             }
         }
+    }
+
+    private void defineOrigem(Jogador j) {
+        boolean equivalente = false;
+        String pergunta;
+        do {
+            pergunta = String.format("%s, escolha uma linha de origem: ", j.getNome());
+            this.lOrigem = validaPonto(pergunta, this.tabuleiro.getTabuleiro().length);
+
+            pergunta = String.format("%s, agora escolha uma coluna de destino: ", j.getNome());
+            this.cOrigem = validaPonto(pergunta, this.tabuleiro.getTabuleiro()[lOrigem].length);
+            boolean pecaOk = tabuleiro.getTabuleiro()[lOrigem][cOrigem] == j.getPecas()[0].peca;
+            boolean damaOk = tabuleiro.getTabuleiro()[lOrigem][cOrigem] == j.getPecas()[1].peca;
+            equivalente = pecaOk || damaOk;
+        } while (!equivalente);
+        // Falta checar se a peça pode ser movida e se não puder, repetir a chamada desse método avisando o porquê.
+//        while (pecaPresa()){
+//            defineOrigem(j);
+//        }
     }
 
     private void setJogadores() {  // Pronto
@@ -51,6 +71,20 @@ public class Jogo {
         int sorteio = (int) Math.round(Math.random()) % 2;
         jogadores[sorteio] = new Jogador(name1, Peca.values()[sorteio], Peca.values()[sorteio + 2]);
         jogadores[(sorteio + 1) % 2] = new Jogador(name2, Peca.values()[(sorteio + 1) % 2], Peca.values()[(sorteio + 1) % 2 + 2]);
+    }
+
+    private int validaPonto(String mensagem, int limite) {
+        int n = -1;
+        if (limite >= 0) {
+            while (n < 0 || n >= limite) {
+                System.out.print(mensagem);
+                n = sc.nextInt();
+                if (n < 0 | n >= limite) {
+                    System.out.println("Coordenada inválida, escolha de 0 até " + (limite - 1));
+                }
+            }
+        }
+        return n;
     }
 
     public String toString() {
