@@ -93,13 +93,47 @@ public class Jogo {
 
     private boolean possivelCaptura() {
         char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
-        if (pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta) {// A peça de origem é uma dama
-            return movimentoValidoDama();
-        } else { // Aqui a peça não é dama
+        boolean linhaSimples = lDestino == lOrigem + 2 || lDestino == lOrigem - 2;
+        boolean colunaSimples = cDestino == cOrigem + 2 || cDestino == cOrigem - 2;
+        if (linhaSimples && colunaSimples) { // Verificar captura simples
+            // inicialmente vou assumir que a peça é branca...
             char oponentePeca = this.pecaPreta;
             char oponenteDama = this.damaPreta;
-            return false; //movimentoValidoDama();
+            if (pecaEscolhida == this.pecaPreta) {
+                oponentePeca = this.pecaBranca;
+                oponenteDama = this.damaBranca;
+            }
+            int vertical = lOrigem - 1, horizontal = cOrigem + 1; // Subindo para direita
+            if (lDestino > lOrigem) {
+                vertical = lDestino - 1; // Descendo
+            }
+            if (cDestino < cOrigem) {
+                horizontal = cOrigem - 1; // Indo para esquerda
+            }
+            char oponente = tabuleiro.getTabuleiro()[vertical][horizontal];
+            if (oponente == oponentePeca || oponente == oponenteDama) {
+                deveCapturar = true;
+                return true;
+            } else {
+                if (pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            if (pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta) {// A peça de origem é uma dama
+                return movimentoValidoDama(); // Aqui já sei que o movimento é longo e feito por uma dama.
+            } else { // Aqui a peça não é dama e está querendo fazer um movimento de dama. Proibido.
+                return false;
+            }
         }
+    }
+
+    private boolean movimentoValidoDama() {
+        boolean ret = false;
+         
+        return ret;
     }
 
     private boolean andaUmaCasaDiagonal() {
