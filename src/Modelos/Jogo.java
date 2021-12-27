@@ -11,6 +11,7 @@ public class Jogo {
     private int nPecasBrancas;
     private int nPecasPretas;
     private int lOrigem, cOrigem, lDestino, cDestino;
+    private boolean deveCapturar = false;
 
     public Jogo() {
         this.jogadores = new Jogador[2];
@@ -30,9 +31,11 @@ public class Jogo {
             while (nPecasBrancas != 0 && nPecasPretas != 0) {
                 System.out.printf("Quem joga agora é %s, as peças podem ser: %s.%n", jogadores[nJogadas].getNome(), Arrays.toString(jogadores[nJogadas].getPecas()));
                 defineOrigem(jogadores[nJogadas]);
+                defineDestino(jogadores[nJogadas]);
                 break;
             }
             System.out.println(toString());
+
             System.out.print("Digite 1 para iniciar um novo jogo: ");
             escolha = sc.nextLine();
             if (!escolha.equals("1")) {
@@ -50,6 +53,7 @@ public class Jogo {
 
             pergunta = String.format("%s, agora escolha uma coluna de destino: ", j.getNome());
             this.cOrigem = validaPonto(pergunta, this.tabuleiro.getTabuleiro()[lOrigem].length);
+
             boolean pecaOk = tabuleiro.getTabuleiro()[lOrigem][cOrigem] == j.getPecas()[0].peca;
             boolean damaOk = tabuleiro.getTabuleiro()[lOrigem][cOrigem] == j.getPecas()[1].peca;
             equivalente = pecaOk || damaOk;
@@ -58,6 +62,20 @@ public class Jogo {
 //        while (pecaPresa()){
 //            defineOrigem(j);
 //        }
+    }
+
+    private void defineDestino(Jogador j) {
+        String pergunta;
+        boolean vago, movimentoOk;
+        do {
+            pergunta = String.format("%s escolha uma linha de destino: ", j.getNome());
+            this.lDestino = validaPonto(pergunta, this.tabuleiro.getTabuleiro().length);
+
+            pergunta = String.format("%s escolha uma coluna de destino: ", j.getNome());
+            this.cDestino = validaPonto(pergunta, this.tabuleiro.getTabuleiro()[lDestino].length);
+            vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
+            movimentoOk = true;
+        } while (!(vago && movimentoOk));
     }
 
     private void setJogadores() {  // Pronto
