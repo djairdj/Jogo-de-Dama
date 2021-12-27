@@ -12,6 +12,7 @@ public class Jogo {
     private int nPecasPretas;
     private int lOrigem, cOrigem, lDestino, cDestino;
     private boolean deveCapturar = false;
+    private char pecaBranca, damaBranca, pecaPreta, damaPreta;
 
     public Jogo() {
         this.jogadores = new Jogador[2];
@@ -19,6 +20,10 @@ public class Jogo {
         this.nJogadas = 0;
         this.nPecasBrancas = 12;
         this.nPecasPretas = 12;
+        this.pecaBranca = this.jogadores[0].peca().peca;
+        this.damaBranca = this.jogadores[0].dama().peca;
+        this.pecaPreta = this.jogadores[1].peca().peca;
+        this.damaPreta = this.jogadores[1].dama().peca;
     }
 
     public void jogar() {
@@ -76,6 +81,14 @@ public class Jogo {
             vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
             movimentoOk = true;
         } while (!(vago && movimentoOk));
+    }
+
+    private boolean movimentoValido() {
+        if (andaUmaCasaDiagonal()) {
+            return true; // Anda uma casa na diagonal
+        } else {
+            return possivelCaptura();
+        }
     }
 
     private void setJogadores() {  // Pronto
