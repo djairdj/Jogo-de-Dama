@@ -76,6 +76,7 @@ public class Jogo {
 
             pergunta = String.format("%s escolha uma coluna de destino: ", j.getNome());
             this.cDestino = validaPonto(pergunta, this.tabuleiro.getTabuleiro()[lDestino].length);
+
             vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
             movimentoOk = movimentoValido();
         } while (!(vago && movimentoOk));
@@ -129,7 +130,15 @@ public class Jogo {
 
     private boolean movimentoValidoDama() {
         boolean ret = false;
-
+        char peca = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+        if (peca != this.pecaPreta && peca != this.pecaBranca) {
+            // Confirmo que é dama
+            boolean eh_diagonal = (lOrigem + cOrigem) % 2 == (lDestino + cDestino) % 2;
+            boolean vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
+            if (vago && eh_diagonal) {
+                
+            }
+        }
         return ret;
     }
 
