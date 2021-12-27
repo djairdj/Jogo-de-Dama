@@ -91,6 +91,17 @@ public class Jogo {
         }
     }
 
+    private boolean possivelCaptura() {
+        char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+        if (pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta) {// A peça de origem é uma dama
+            return movimentoValidoDama();
+        } else { // Aqui a peça não é dama
+            char oponentePeca = this.pecaPreta;
+            char oponenteDama = this.damaPreta;
+            return false; //movimentoValidoDama();
+        }
+    }
+
     private boolean andaUmaCasaDiagonal() {
         var pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
         int nextLine, passo = 1;
