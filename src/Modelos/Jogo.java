@@ -150,6 +150,7 @@ public class Jogo {
     }
 
     private boolean checkDiagonalSupDireita() {
+        boolean ret = false;
         char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
         char pOponente = this.pecaPreta;
         char dOponente = this.damaPreta;
@@ -158,19 +159,26 @@ public class Jogo {
             pOponente = this.pecaBranca;
             dOponente = this.damaBranca;
         }
-
+        return ret;
     }
 
     private boolean checkDiagonalSupEsquerda() {
+        boolean ret = false;
+
+        return ret;
 
     }
 
     private boolean checkDiagonalInfDireita() {
+        boolean ret = false;
 
+        return ret;
     }
 
     private boolean checkDiagonalInfEsquerda() {
+        boolean ret = false;
 
+        return ret;
     }
 
     private boolean andaUmaCasaDiagonal() {
