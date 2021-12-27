@@ -39,8 +39,6 @@ public class Jogo {
                 defineDestino(jogadores[nJogadas]);
                 break;
             }
-            System.out.println(toString());
-
             System.out.print("Digite 1 para iniciar um novo jogo: ");
             escolha = sc.nextLine();
             if (!escolha.equals("1")) {
@@ -50,7 +48,7 @@ public class Jogo {
     }
 
     private void defineOrigem(Jogador j) {
-        boolean equivalente = false;
+        boolean equivalente;
         String pergunta;
         do {
             pergunta = String.format("%s, escolha uma linha de origem: ", j.getNome());
@@ -79,7 +77,7 @@ public class Jogo {
             pergunta = String.format("%s escolha uma coluna de destino: ", j.getNome());
             this.cDestino = validaPonto(pergunta, this.tabuleiro.getTabuleiro()[lDestino].length);
             vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
-            movimentoOk = true;
+            movimentoOk = movimentoValido();
         } while (!(vago && movimentoOk));
     }
 
@@ -87,11 +85,11 @@ public class Jogo {
         if (andaUmaCasaDiagonal()) {
             return true; // Anda uma casa na diagonal
         } else {
-            return possivelCaptura();
+            return possibleCapture();
         }
     }
 
-    private boolean possivelCaptura() {
+    private boolean possibleCapture() {
         char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
         boolean linhaSimples = lDestino == lOrigem + 2 || lDestino == lOrigem - 2;
         boolean colunaSimples = cDestino == cOrigem + 2 || cDestino == cOrigem - 2;
@@ -115,11 +113,10 @@ public class Jogo {
                 deveCapturar = true;
                 return true;
             } else {
-                if (pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta) {
-                    return true;
-                } else {
+                if (oponente != ' ') {
                     return false;
                 }
+                return (pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta);
             }
         } else {
             if (pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta) {// A peça de origem é uma dama
@@ -132,7 +129,7 @@ public class Jogo {
 
     private boolean movimentoValidoDama() {
         boolean ret = false;
-         
+
         return ret;
     }
 
