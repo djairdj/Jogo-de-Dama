@@ -135,7 +135,7 @@ public class Jogo {
             boolean eh_diagonal = (lOrigem + cOrigem) % 2 == (lDestino + cDestino) % 2;
             boolean vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
             if (vago && eh_diagonal) {
-                if (lDestino < lOrigem && cDestino > cOrigem) { // Para cima e para direita
+                /*if (lDestino < lOrigem && cDestino > cOrigem) { // Para cima e para direita
                     return checkDiagonalSupDireita();
                 } else if (lDestino < lOrigem && cDestino < cOrigem) { // Para cima e para esquerda
                     return checkDiagonalSupEsquerda();
@@ -143,14 +143,132 @@ public class Jogo {
                     return checkDiagonalInfEsquerda();
                 } else {
                     return checkDiagonalInfDireita();
-                }
+                }*/
+                return checkdiagonal();
             }
         }
         return false;
     }
 
-    private boolean checkDiagonalSupDireita() {
-        boolean ret = false;
+    /*
+        private boolean checkDiagonalSupDireita() {
+            boolean ret = false;
+            char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+            char pOponente = this.pecaPreta;
+            char dOponente = this.damaPreta;
+
+            if (damaEscolhida == this.damaPreta) {
+                pOponente = this.pecaBranca;
+                dOponente = this.damaBranca;
+            }
+            var tab = tabuleiro.getTabuleiro();
+            int nPecas = 0;
+            char p;
+            for (int l = lOrigem - 1, c = cOrigem + 1; l > lDestino; l--, c++) {
+                p = tab[l][c];
+                if (p != pOponente && p != dOponente && p != ' ') {
+                    return false;
+                }
+                if (p == pOponente || p == dOponente) {
+                    nPecas++;
+                }
+            }
+            if (nPecas <= 1) {
+                deveCapturar = true;
+                return true;
+            }
+            return ret;
+        }
+
+        private boolean checkDiagonalSupEsquerda() {
+            boolean ret = false;
+            char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+            char pOponente = this.pecaPreta;
+            char dOponente = this.damaPreta;
+
+            if (damaEscolhida == this.damaPreta) {
+                pOponente = this.pecaBranca;
+                dOponente = this.damaBranca;
+            }
+            var tab = tabuleiro.getTabuleiro();
+            int nPecas = 0;
+            char p;
+            for (int l = lOrigem - 1, c = cOrigem - 1; l > lDestino; l--, c--) {
+                p = tab[l][c];
+                if (p != pOponente && p != dOponente && p != ' ') {
+                    return false;
+                }
+                if (p == pOponente || p == dOponente) {
+                    nPecas++;
+                }
+            }
+            if (nPecas <= 1) {
+                deveCapturar = true;
+                return true;
+            }
+            return ret;
+        }
+
+        private boolean checkDiagonalInfDireita() {
+            boolean ret = false;
+            char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+            char pOponente = this.pecaPreta;
+            char dOponente = this.damaPreta;
+
+            if (damaEscolhida == this.damaPreta) {
+                pOponente = this.pecaBranca;
+                dOponente = this.damaBranca;
+            }
+            var tab = tabuleiro.getTabuleiro();
+            int nPecas = 0;
+            char p;
+            for (int l = lOrigem + 1, c = cOrigem + 1; l < lDestino; l--, c++) {
+                p = tab[l][c];
+                if (p != pOponente && p != dOponente && p != ' ') {
+                    return false;
+                }
+                if (p == pOponente || p == dOponente) {
+                    nPecas++;
+                }
+            }
+            if (nPecas <= 1) {
+                deveCapturar = true;
+                return true;
+            }
+            return ret;
+        }
+
+        private boolean checkDiagonalInfEsquerda() {
+            boolean ret = false;
+            char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+            char pOponente = this.pecaPreta;
+            char dOponente = this.damaPreta;
+
+            if (damaEscolhida == this.damaPreta) {
+                pOponente = this.pecaBranca;
+                dOponente = this.damaBranca;
+            }
+            var tab = tabuleiro.getTabuleiro();
+            int nPecas = 0;
+            char p;
+            for (int l = lOrigem + 1, c = cOrigem - 1; l < lDestino; l++, c--) {
+                p = tab[l][c];
+                if (p != pOponente && p != dOponente && p != ' ') {
+                    return false;
+                }
+                if (p == pOponente || p == dOponente) {
+                    nPecas++;
+                }
+            }
+            if (nPecas <= 1) {
+                deveCapturar = true;
+                return true;
+            }
+            return ret;
+        }
+    */
+    private boolean checkdiagonal() {
+        boolean resp = false;
         char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
         char pOponente = this.pecaPreta;
         char dOponente = this.damaPreta;
@@ -159,26 +277,33 @@ public class Jogo {
             pOponente = this.pecaBranca;
             dOponente = this.damaBranca;
         }
-        return ret;
-    }
-
-    private boolean checkDiagonalSupEsquerda() {
-        boolean ret = false;
-
-        return ret;
-
-    }
-
-    private boolean checkDiagonalInfDireita() {
-        boolean ret = false;
-
-        return ret;
-    }
-
-    private boolean checkDiagonalInfEsquerda() {
-        boolean ret = false;
-
-        return ret;
+        int menor = lOrigem, maior = lDestino, coluna = cOrigem + 1, passo = 1; // Descendo para direita
+        if (lDestino < lOrigem) {
+            menor = lDestino;
+            maior = lOrigem;
+            coluna = cDestino + 1;
+        }
+        if (cDestino < cOrigem) {
+            passo = -1;
+            coluna = cOrigem - 1;
+        }
+        var tab = this.tabuleiro.getTabuleiro();
+        int nPecas = 0;
+        char p;
+        for (int l = menor + 1; l < maior; l++, coluna += passo) {
+            p = tab[l][coluna];
+            if (p != pOponente && p != dOponente && p != ' ') {
+                return false;
+            }
+            if (p == pOponente || p == dOponente) {
+                nPecas++;
+            }
+        }
+        if (nPecas <= 1) {
+            deveCapturar = true;
+            return true;
+        }
+        return resp;
     }
 
     private boolean andaUmaCasaDiagonal() {
