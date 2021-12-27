@@ -129,17 +129,48 @@ public class Jogo {
     }
 
     private boolean movimentoValidoDama() {
-        boolean ret = false;
         char peca = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
         if (peca != this.pecaPreta && peca != this.pecaBranca) {
             // Confirmo que é dama
             boolean eh_diagonal = (lOrigem + cOrigem) % 2 == (lDestino + cDestino) % 2;
             boolean vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
             if (vago && eh_diagonal) {
-
+                if (lDestino < lOrigem && cDestino > cOrigem) { // Para cima e para direita
+                    return checkDiagonalSupDireita();
+                } else if (lDestino < lOrigem && cDestino < cOrigem) { // Para cima e para esquerda
+                    return checkDiagonalSupEsquerda();
+                } else if (lDestino > lOrigem && cDestino < cOrigem) { // Para baixo e para esquerda
+                    return checkDiagonalInfEsquerda();
+                } else {
+                    return checkDiagonalInfDireita();
+                }
             }
         }
-        return ret;
+        return false;
+    }
+
+    private boolean checkDiagonalSupDireita() {
+        char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+        char pOponente = this.pecaPreta;
+        char dOponente = this.damaPreta;
+
+        if (damaEscolhida == this.damaPreta) {
+            pOponente = this.pecaBranca;
+            dOponente = this.damaBranca;
+        }
+
+    }
+
+    private boolean checkDiagonalSupEsquerda() {
+
+    }
+
+    private boolean checkDiagonalInfDireita() {
+
+    }
+
+    private boolean checkDiagonalInfEsquerda() {
+
     }
 
     private boolean andaUmaCasaDiagonal() {
