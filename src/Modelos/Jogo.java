@@ -37,6 +37,15 @@ public class Jogo {
                 System.out.printf("Quem joga agora é %s, as peças podem ser: %s.%n", jogadores[nJogadas].getNome(), Arrays.toString(jogadores[nJogadas].getPecas()));
                 defineOrigem(jogadores[nJogadas]);
                 defineDestino(jogadores[nJogadas]);
+                if (deveCapturar) {
+                    capturarPeca();
+                    viraDama();
+                    deveCapturar = false;
+                    while (eh_possivelCapturar(jogadores[nJogadas])) {
+                        defineDestino(jogadores[nJogadas]);
+                    }
+                }
+
                 break;
             }
             System.out.print("Digite 1 para iniciar um novo jogo: ");
@@ -144,7 +153,7 @@ public class Jogo {
                 } else {
                     return checkDiagonalInfDireita();
                 }*/
-                return checkdiagonal();
+                return checkDiagonal();
             }
         }
         return false;
@@ -267,7 +276,7 @@ public class Jogo {
             return ret;
         }
     */
-    private boolean checkdiagonal() {
+    private boolean checkDiagonal() {
         boolean resp = false;
         char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
         char pOponente = this.pecaPreta;
