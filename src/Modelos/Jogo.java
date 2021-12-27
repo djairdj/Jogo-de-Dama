@@ -91,6 +91,17 @@ public class Jogo {
         }
     }
 
+    private boolean andaUmaCasaDiagonal() {
+        var pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+        int nextLine, passo = 1;
+        if (pecaEscolhida == this.pecaBranca) {
+            passo = -1;
+        }
+        nextLine = lOrigem + passo;
+
+        return ((lDestino == nextLine) && (cDestino == cOrigem - passo || cDestino == cOrigem + passo));
+    }
+
     private void setJogadores() {  // Pronto
         String name1, name2;
         System.out.print("Informe o nome do primeiro jogador: ");
