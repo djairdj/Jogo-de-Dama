@@ -136,7 +136,7 @@ public class Jogo {
             boolean eh_diagonal = (lOrigem + cOrigem) % 2 == (lDestino + cDestino) % 2;
             boolean vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
             if (vago && eh_diagonal) {
-                
+
             }
         }
         return ret;
