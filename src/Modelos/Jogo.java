@@ -315,6 +315,17 @@ public class Jogo {
         return resp;
     }
 
+    private void viraDama() {
+        char peca = tabuleiro.getTabuleiro()[lDestino][cDestino];
+
+        if (lDestino == 0 && peca == this.pecaBranca) {
+            tabuleiro.getTabuleiro()[lDestino][cDestino] = this.damaBranca;
+        }
+        if (lDestino == tabuleiro.getTabuleiro().length - 1 && peca == this.pecaPreta) {
+            tabuleiro.getTabuleiro()[lDestino][cDestino] = this.damaBranca;
+        }
+    }
+
     private boolean andaUmaCasaDiagonal() {
         var pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
         int nextLine, passo = 1;
