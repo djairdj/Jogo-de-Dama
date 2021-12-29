@@ -14,12 +14,13 @@ public class Jogo {
     private boolean deveCapturar = false;
     private char pecaBranca, damaBranca, pecaPreta, damaPreta;
 
-    public Jogo() {
+    public void defineDadosIniciais() {
         this.jogadores = new Jogador[2];
         this.tabuleiro = new Tabuleiro(Peca.PecaBranca.peca, Peca.PecaPreta.peca);
         this.nJogadas = 0;
         this.nPecasBrancas = 12;
         this.nPecasPretas = 12;
+        setJogadores();
         this.pecaBranca = this.jogadores[0].peca().peca;
         this.damaBranca = this.jogadores[0].dama().peca;
         this.pecaPreta = this.jogadores[1].peca().peca;
@@ -32,21 +33,27 @@ public class Jogo {
         String escolha = sc.nextLine();
         while (escolha.equals("1")) {
             // A variável nJogada já vale 0 (inicialmente) e cada mudança de jogador ela deve ser incrementada.
-            setJogadores();
+            int vez;
+            defineDadosIniciais();
             while (nPecasBrancas != 0 && nPecasPretas != 0) {
-                System.out.printf("Quem joga agora é %s, as peças podem ser: %s.%n", jogadores[nJogadas].getNome(), Arrays.toString(jogadores[nJogadas].getPecas()));
-                defineOrigem(jogadores[nJogadas]);
-                defineDestino(jogadores[nJogadas]);
+                vez = nJogadas % 2;
+                System.out.printf("Quem joga agora é %s, as peças podem ser: %s.%n", jogadores[vez].getNome(), Arrays.toString(jogadores[vez].getPecas()));
+                System.out.print("\n" + tabuleiro);
+                defineOrigem(jogadores[vez]);
+                System.out.print("\n" + tabuleiro);
+                defineDestino(jogadores[vez]);
                 if (deveCapturar) {
                     capturarPeca();
                     viraDama();
                     deveCapturar = false;
-                    while (eh_possivelCapturar(jogadores[nJogadas])) {
-                        defineDestino(jogadores[nJogadas]);
-                    }
+//                    while (eh_possivelCapturar(jogadores[nJogadas])) {
+//                        defineDestino(jogadores[nJogadas]);
+//                    }
+                } else {
+                    movePeca();
+                    viraDama();
                 }
-
-                break;
+                nJogadas++;
             }
             System.out.print("Digite 1 para iniciar um novo jogo: ");
             escolha = sc.nextLine();
@@ -56,6 +63,46 @@ public class Jogo {
         }
     }
 
+    private void capturarPeca() {
+        char peca = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+        if (peca == this.damaBranca || peca == this.damaPreta) {
+            capturarDama();
+        } else {
+            int l = lOrigem - 1, c = cOrigem + 1; // Subindo a direita
+            if (lOrigem < lDestino) { // Está descendo
+                l = lOrigem + 1;
+            }
+            if (cOrigem > cDestino) { // Está indo à esquerda
+                c = cOrigem - 1;
+            }
+            char oponente = tabuleiro.getTabuleiro()[l][c];
+            if (peca == this.pecaBranca) {
+                if (oponente == this.damaPreta || oponente == this.pecaPreta) {
+                    tabuleiro.getTabuleiro()[lDestino][cDestino] = peca;
+                    tabuleiro.getTabuleiro()[lOrigem][cOrigem] = ' ';
+                    tabuleiro.getTabuleiro()[l][c] = ' ';
+                    this.nPecasPretas--;
+                } else {
+                    System.out.println("Não é possível fazer a captura.");
+                }
+            } else if (peca == this.pecaPreta) {
+                if (oponente == this.pecaBranca || oponente == this.damaBranca) {
+                    tabuleiro.getTabuleiro()[lDestino][cDestino] = peca;
+                    tabuleiro.getTabuleiro()[lOrigem][cOrigem] = ' ';
+                    tabuleiro.getTabuleiro()[l][c] = ' ';
+                    this.nPecasBrancas--;
+                } else {
+                    System.out.println("Não é possível fazer a captura.");
+                }
+            }
+        }
+    }
+
+    private void capturarDama() {
+        // Acredito que dá para usar a mesma lógica do laço para captura de peças
+        // A diferença aparente é que a dama pode se mover mais que duas casas
+    }
+
     private void defineOrigem(Jogador j) {
         boolean equivalente;
         String pergunta;
@@ -63,7 +110,7 @@ public class Jogo {
             pergunta = String.format("%s, escolha uma linha de origem: ", j.getNome());
             this.lOrigem = validaPonto(pergunta, this.tabuleiro.getTabuleiro().length);
 
-            pergunta = String.format("%s, agora escolha uma coluna de destino: ", j.getNome());
+            pergunta = String.format("%s, agora escolha uma coluna de origem: ", j.getNome());
             this.cOrigem = validaPonto(pergunta, this.tabuleiro.getTabuleiro()[lOrigem].length);
 
             boolean pecaOk = tabuleiro.getTabuleiro()[lOrigem][cOrigem] == j.getPecas()[0].peca;
@@ -89,6 +136,11 @@ public class Jogo {
             vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
             movimentoOk = movimentoValido();
         } while (!(vago && movimentoOk));
+    }
+
+    private void movePeca() {
+        tabuleiro.getTabuleiro()[lDestino][cDestino] = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+        tabuleiro.getTabuleiro()[lOrigem][cOrigem] = ' ';
     }
 
     private boolean movimentoValido() {
@@ -322,7 +374,7 @@ public class Jogo {
             tabuleiro.getTabuleiro()[lDestino][cDestino] = this.damaBranca;
         }
         if (lDestino == tabuleiro.getTabuleiro().length - 1 && peca == this.pecaPreta) {
-            tabuleiro.getTabuleiro()[lDestino][cDestino] = this.damaBranca;
+            tabuleiro.getTabuleiro()[lDestino][cDestino] = this.damaPreta;
         }
     }
 
