@@ -50,14 +50,14 @@ public class Tabuleiro {
         }
         linha += "\n";
 
-        for (int index = 1; index <= tabuleiro[0].length; index++) {
+        for (int index = 0; index < tabuleiro[0].length; index++) {
             ss.append(index + espaco);
         }
         ss.append("\n" + linha);
         for (l = 0; l < tabuleiro.length; l++) {
             for (c = 0; c < tabuleiro[l].length; c++) {
                 ss.append(" " + tabuleiro[l][c] + " |");
-                if (c == tabuleiro[l].length - 1) ss.append("  " + (l + 1));
+                if (c == tabuleiro[l].length - 1) ss.append("  " + l);
             }
             ss.append("\n" + linha);
         }
