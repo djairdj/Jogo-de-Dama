@@ -38,7 +38,7 @@ public class Jogo {
             while (nPecasBrancas != 0 && nPecasPretas != 0) {
                 vez = nJogadas % 2;
                 System.out.print("\n" + tabuleiro);
-                System.out.printf("Quem joga agora é %s, as peças podem ser: %s.%n", jogadores[vez].getNome(), Arrays.toString(jogadores[vez].getPecas()));
+                System.out.printf("Vez de %s, as peças podem ser: %s.%n", jogadores[vez].getNome(), Arrays.toString(jogadores[vez].getPecas()));
                 defineOrigem(jogadores[vez]);
                 System.out.print("\n" + tabuleiro);
                 defineDestino(jogadores[vez]);
@@ -129,9 +129,9 @@ public class Jogo {
             this.cDestino = validaPonto(prefixo + pergunta, this.tabuleiro.getTabuleiro()[lDestino].length);
 
             vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
-            eh_diagonal = (lOrigem + cOrigem) % 2 == (lDestino + cDestino) % 2;
-            movimentoOk = movimentoValido();
-        } while (!(vago && eh_diagonal && movimentoOk));
+            eh_diagonal = eh_diagonal();
+
+        } while (!(vago && eh_diagonal && movimentoValido()));
     }
 
     private void movePeca() {
@@ -184,7 +184,6 @@ public class Jogo {
 
     private boolean possibleCapture2() {
         return checkDiagonal();
-        
     }
 
     private boolean movimentoValidoDama() {
@@ -200,165 +199,50 @@ public class Jogo {
         return false;
     }
 
-    /*
-        private boolean checkDiagonalSupDireita() {
-            boolean ret = false;
-            char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
-            char pOponente = this.pecaPreta;
-            char dOponente = this.damaPreta;
-
-            if (damaEscolhida == this.damaPreta) {
-                pOponente = this.pecaBranca;
-                dOponente = this.damaBranca;
-            }
-            var tab = tabuleiro.getTabuleiro();
-            int nPecas = 0;
-            char p;
-            for (int l = lOrigem - 1, c = cOrigem + 1; l > lDestino; l--, c++) {
-                p = tab[l][c];
-                if (p != pOponente && p != dOponente && p != ' ') {
-                    return false;
-                }
-                if (p == pOponente || p == dOponente) {
-                    nPecas++;
-                }
-            }
-            if (nPecas <= 1) {
-                deveCapturar = true;
-                return true;
-            }
-            return ret;
-        }
-
-        private boolean checkDiagonalSupEsquerda() {
-            boolean ret = false;
-            char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
-            char pOponente = this.pecaPreta;
-            char dOponente = this.damaPreta;
-
-            if (damaEscolhida == this.damaPreta) {
-                pOponente = this.pecaBranca;
-                dOponente = this.damaBranca;
-            }
-            var tab = tabuleiro.getTabuleiro();
-            int nPecas = 0;
-            char p;
-            for (int l = lOrigem - 1, c = cOrigem - 1; l > lDestino; l--, c--) {
-                p = tab[l][c];
-                if (p != pOponente && p != dOponente && p != ' ') {
-                    return false;
-                }
-                if (p == pOponente || p == dOponente) {
-                    nPecas++;
-                }
-            }
-            if (nPecas <= 1) {
-                deveCapturar = true;
-                return true;
-            }
-            return ret;
-        }
-
-        private boolean checkDiagonalInfDireita() {
-            boolean ret = false;
-            char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
-            char pOponente = this.pecaPreta;
-            char dOponente = this.damaPreta;
-
-            if (damaEscolhida == this.damaPreta) {
-                pOponente = this.pecaBranca;
-                dOponente = this.damaBranca;
-            }
-            var tab = tabuleiro.getTabuleiro();
-            int nPecas = 0;
-            char p;
-            for (int l = lOrigem + 1, c = cOrigem + 1; l < lDestino; l--, c++) {
-                p = tab[l][c];
-                if (p != pOponente && p != dOponente && p != ' ') {
-                    return false;
-                }
-                if (p == pOponente || p == dOponente) {
-                    nPecas++;
-                }
-            }
-            if (nPecas <= 1) {
-                deveCapturar = true;
-                return true;
-            }
-            return ret;
-        }
-
-        private boolean checkDiagonalInfEsquerda() {
-            boolean ret = false;
-            char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
-            char pOponente = this.pecaPreta;
-            char dOponente = this.damaPreta;
-
-            if (damaEscolhida == this.damaPreta) {
-                pOponente = this.pecaBranca;
-                dOponente = this.damaBranca;
-            }
-            var tab = tabuleiro.getTabuleiro();
-            int nPecas = 0;
-            char p;
-            for (int l = lOrigem + 1, c = cOrigem - 1; l < lDestino; l++, c--) {
-                p = tab[l][c];
-                if (p != pOponente && p != dOponente && p != ' ') {
-                    return false;
-                }
-                if (p == pOponente || p == dOponente) {
-                    nPecas++;
-                }
-            }
-            if (nPecas <= 1) {
-                deveCapturar = true;
-                return true;
-            }
-            return ret;
-        }
-    */
     private boolean checkDiagonal() {
         char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
 //        if (pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta) {
         char pOponente = this.pecaPreta;
         char dOponente = this.damaPreta;
 
-        if (pecaEscolhida == this.damaPreta) {
+        if (pecaEscolhida == this.damaPreta || pecaEscolhida == this.pecaPreta) {
             pOponente = this.pecaBranca;
             dOponente = this.damaBranca;
         }
         int menor = lOrigem, maior = lDestino, coluna = cOrigem + 1, passo = 1; // Descendo para direita
-        if (lDestino < lOrigem) {
-            menor = lDestino;
+        if (lDestino < lOrigem) { // Subindo
             maior = lOrigem;
-            coluna = cDestino + 1;
+            menor = lDestino;
+            coluna = (cDestino > cOrigem) ? cDestino - 1 : cDestino + 1;
+            passo = (cDestino > cOrigem) ? -1 : 1;
         }
-        if (cDestino < cOrigem) {
-            passo = -1;
-            coluna = cOrigem - 1;
+        if (cDestino < cOrigem) { // Esquerda
+            passo = (lDestino < lOrigem) ? 1 : -1;
+            coluna = (lDestino < lOrigem) ? cDestino + 1 : cOrigem - 1;
         }
         var tab = this.tabuleiro.getTabuleiro();
-        int nPecas = 0;
+        int nPecas = 0, space = 0;
         char p;
-        if (pecaEscolhida == this.pecaPreta || pecaEscolhida == this.pecaBranca) {
-            maior = menor + 2;
-        }
 
         for (int l = menor + 1; l < maior; l++, coluna += passo) {
             p = tab[l][coluna];
             if (p != pOponente && p != dOponente && p != ' ') {
                 return false;
             }
+            if (p == ' ') {
+                space++;
+            }
             if (p == pOponente || p == dOponente) {
                 nPecas++;
             }
         }
-        if (nPecas == 1) {
-            deveCapturar = true;
-        }
-        if (nPecas == 0 && (pecaEscolhida == this.pecaPreta || pecaEscolhida == this.pecaBranca)) {
+        boolean pSimples = (pecaEscolhida == this.pecaPreta || pecaEscolhida == this.pecaBranca);
+        if ((space > 0 && (pSimples)) || (nPecas > 1)) {
             return false;
         } else {
+            if ((nPecas == 1 && (space == 0 || !pSimples))) {
+                deveCapturar = true;
+            }
             return true;
         }
     }
@@ -369,14 +253,15 @@ public class Jogo {
         var tab = this.tabuleiro.getTabuleiro();
         char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem], pOponente, dOponente, p;
         int menor = lOrigem, maior = lDestino, coluna = cOrigem + 1, passo = 1; // Descendo para direita
-        if (lDestino < lOrigem) {
-            menor = lDestino;
+        if (lDestino < lOrigem) { // Subindo
             maior = lOrigem;
-            coluna = cDestino + 1;
+            menor = lDestino;
+            coluna = (cDestino > cOrigem) ? cDestino - 1 : cDestino + 1;
+            passo = (cDestino > cOrigem) ? -1 : 1;
         }
-        if (cDestino < cOrigem) {
-            passo = -1;
-            coluna = cOrigem - 1;
+        if (cDestino < cOrigem) { // Esquerda
+            passo = (lDestino < lOrigem) ? 1 : -1;
+            coluna = (lDestino < lOrigem) ? cDestino + 1 : cOrigem - 1;
         }
 
         pOponente = this.pecaPreta;
@@ -420,6 +305,11 @@ public class Jogo {
         if (lDestino == tabuleiro.getTabuleiro().length - 1 && peca == this.pecaPreta) {
             tabuleiro.getTabuleiro()[lDestino][cDestino] = this.damaPreta;
         }
+    }
+
+    private boolean eh_diagonal() {
+        boolean mesmaLinhaMesmaColuna = lOrigem == lDestino || cOrigem == cDestino;
+        return (!mesmaLinhaMesmaColuna && (lOrigem + cOrigem) % 2 == (lDestino + cDestino) % 2);
     }
 
     private boolean andaUmaCasaDiagonal() {
