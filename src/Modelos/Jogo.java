@@ -37,8 +37,8 @@ public class Jogo {
             defineDadosIniciais();
             while (nPecasBrancas != 0 && nPecasPretas != 0) {
                 vez = nJogadas % 2;
-                System.out.printf("Quem joga agora é %s, as peças podem ser: %s.%n", jogadores[vez].getNome(), Arrays.toString(jogadores[vez].getPecas()));
                 System.out.print("\n" + tabuleiro);
+                System.out.printf("Quem joga agora é %s, as peças podem ser: %s.%n", jogadores[vez].getNome(), Arrays.toString(jogadores[vez].getPecas()));
                 defineOrigem(jogadores[vez]);
                 System.out.print("\n" + tabuleiro);
                 defineDestino(jogadores[vez]);
@@ -66,7 +66,7 @@ public class Jogo {
     private void capturarPeca() {
         char peca = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
         if (peca == this.damaBranca || peca == this.damaPreta) {
-            capturarDama();
+            capturarGeral();
         } else {
             int l = lOrigem - 1, c = cOrigem + 1; // Subindo a direita
             if (lOrigem < lDestino) { // Está descendo
@@ -78,8 +78,7 @@ public class Jogo {
             char oponente = tabuleiro.getTabuleiro()[l][c];
             if (peca == this.pecaBranca) {
                 if (oponente == this.damaPreta || oponente == this.pecaPreta) {
-                    tabuleiro.getTabuleiro()[lDestino][cDestino] = peca;
-                    tabuleiro.getTabuleiro()[lOrigem][cOrigem] = ' ';
+                    movePeca();
                     tabuleiro.getTabuleiro()[l][c] = ' ';
                     this.nPecasPretas--;
                 } else {
@@ -87,8 +86,7 @@ public class Jogo {
                 }
             } else if (peca == this.pecaPreta) {
                 if (oponente == this.pecaBranca || oponente == this.damaBranca) {
-                    tabuleiro.getTabuleiro()[lDestino][cDestino] = peca;
-                    tabuleiro.getTabuleiro()[lOrigem][cOrigem] = ' ';
+                    movePeca();
                     tabuleiro.getTabuleiro()[l][c] = ' ';
                     this.nPecasBrancas--;
                 } else {
@@ -96,11 +94,6 @@ public class Jogo {
                 }
             }
         }
-    }
-
-    private void capturarDama() {
-        // Acredito que dá para usar a mesma lógica do laço para captura de peças
-        // A diferença aparente é que a dama pode se mover mais que duas casas
     }
 
     private void defineOrigem(Jogador j) {
@@ -125,17 +118,20 @@ public class Jogo {
 
     private void defineDestino(Jogador j) {
         String pergunta;
-        boolean vago, movimentoOk;
+        boolean vago, movimentoOk, eh_diagonal;
+        String prefixo = "";
+        prefixo = String.format("%s, sua linha de origem é %d e a coluna de origem é %d.\n", j.getNome(), lOrigem, cOrigem);
         do {
-            pergunta = String.format("%s escolha uma linha de destino: ", j.getNome());
-            this.lDestino = validaPonto(pergunta, this.tabuleiro.getTabuleiro().length);
+            pergunta = String.format("%s, escolha uma linha de destino: ", j.getNome());
+            this.lDestino = validaPonto(prefixo + pergunta, this.tabuleiro.getTabuleiro().length);
 
-            pergunta = String.format("%s escolha uma coluna de destino: ", j.getNome());
-            this.cDestino = validaPonto(pergunta, this.tabuleiro.getTabuleiro()[lDestino].length);
+            pergunta = String.format("%s, escolha uma coluna de destino: ", j.getNome());
+            this.cDestino = validaPonto(prefixo + pergunta, this.tabuleiro.getTabuleiro()[lDestino].length);
 
             vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
+            eh_diagonal = (lOrigem + cOrigem) % 2 == (lDestino + cDestino) % 2;
             movimentoOk = movimentoValido();
-        } while (!(vago && movimentoOk));
+        } while (!(vago && eh_diagonal && movimentoOk));
     }
 
     private void movePeca() {
@@ -147,46 +143,48 @@ public class Jogo {
         if (andaUmaCasaDiagonal()) {
             return true; // Anda uma casa na diagonal
         } else {
-            return possibleCapture();
+            return possibleCapture2();
         }
     }
 
     private boolean possibleCapture() {
         char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
-        boolean linhaSimples = lDestino == lOrigem + 2 || lDestino == lOrigem - 2;
-        boolean colunaSimples = cDestino == cOrigem + 2 || cDestino == cOrigem - 2;
-        if (linhaSimples && colunaSimples) { // Verificar captura simples
-            // inicialmente vou assumir que a peça é branca...
-            char oponentePeca = this.pecaPreta;
-            char oponenteDama = this.damaPreta;
-            if (pecaEscolhida == this.pecaPreta) {
-                oponentePeca = this.pecaBranca;
-                oponenteDama = this.damaBranca;
-            }
-            int vertical = lOrigem - 1, horizontal = cOrigem + 1; // Subindo para direita
-            if (lDestino > lOrigem) {
-                vertical = lDestino - 1; // Descendo
-            }
-            if (cDestino < cOrigem) {
-                horizontal = cOrigem - 1; // Indo para esquerda
-            }
-            char oponente = tabuleiro.getTabuleiro()[vertical][horizontal];
-            if (oponente == oponentePeca || oponente == oponenteDama) {
-                deveCapturar = true;
-                return true;
-            } else {
-                if (oponente != ' ') {
+        if ((pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta)) {
+            return movimentoValidoDama();
+        } else {
+            boolean linhaSimples = lDestino == lOrigem + 2 || lDestino == lOrigem - 2;
+            boolean colunaSimples = cDestino == cOrigem + 2 || cDestino == cOrigem - 2;
+            if (linhaSimples && colunaSimples) { // Verificar captura simples
+                // inicialmente vou assumir que a peça é branca...
+                char oponentePeca = this.pecaPreta;
+                char oponenteDama = this.damaPreta;
+                if (pecaEscolhida == this.pecaPreta) {
+                    oponentePeca = this.pecaBranca;
+                    oponenteDama = this.damaBranca;
+                }
+                int vertical = lOrigem - 1, horizontal = cOrigem + 1; // Subindo para direita
+                if (lDestino > lOrigem) {
+                    vertical = lDestino - 1; // Descendo
+                }
+                if (cDestino < cOrigem) {
+                    horizontal = cOrigem - 1; // Indo para esquerda
+                }
+                char oponente = tabuleiro.getTabuleiro()[vertical][horizontal];
+                if (oponente == oponentePeca || oponente == oponenteDama) {
+                    deveCapturar = true;
+                    return true;
+                } else {
                     return false;
                 }
-                return (pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta);
             }
-        } else {
-            if (pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta) {// A peça de origem é uma dama
-                return movimentoValidoDama(); // Aqui já sei que o movimento é longo e feito por uma dama.
-            } else { // Aqui a peça não é dama e está querendo fazer um movimento de dama. Proibido.
-                return false;
-            }
+            // Aqui a peça não é dama e está querendo fazer um movimento de dama. Proibido.
+            return false;
         }
+    }
+
+    private boolean possibleCapture2() {
+        return checkDiagonal();
+        
     }
 
     private boolean movimentoValidoDama() {
@@ -196,15 +194,6 @@ public class Jogo {
             boolean eh_diagonal = (lOrigem + cOrigem) % 2 == (lDestino + cDestino) % 2;
             boolean vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
             if (vago && eh_diagonal) {
-                /*if (lDestino < lOrigem && cDestino > cOrigem) { // Para cima e para direita
-                    return checkDiagonalSupDireita();
-                } else if (lDestino < lOrigem && cDestino < cOrigem) { // Para cima e para esquerda
-                    return checkDiagonalSupEsquerda();
-                } else if (lDestino > lOrigem && cDestino < cOrigem) { // Para baixo e para esquerda
-                    return checkDiagonalInfEsquerda();
-                } else {
-                    return checkDiagonalInfDireita();
-                }*/
                 return checkDiagonal();
             }
         }
@@ -329,12 +318,12 @@ public class Jogo {
         }
     */
     private boolean checkDiagonal() {
-        boolean resp = false;
-        char damaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+        char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+//        if (pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta) {
         char pOponente = this.pecaPreta;
         char dOponente = this.damaPreta;
 
-        if (damaEscolhida == this.damaPreta) {
+        if (pecaEscolhida == this.damaPreta) {
             pOponente = this.pecaBranca;
             dOponente = this.damaBranca;
         }
@@ -351,6 +340,10 @@ public class Jogo {
         var tab = this.tabuleiro.getTabuleiro();
         int nPecas = 0;
         char p;
+        if (pecaEscolhida == this.pecaPreta || pecaEscolhida == this.pecaBranca) {
+            maior = menor + 2;
+        }
+
         for (int l = menor + 1; l < maior; l++, coluna += passo) {
             p = tab[l][coluna];
             if (p != pOponente && p != dOponente && p != ' ') {
@@ -360,11 +353,62 @@ public class Jogo {
                 nPecas++;
             }
         }
-        if (nPecas <= 1) {
+        if (nPecas == 1) {
             deveCapturar = true;
+        }
+        if (nPecas == 0 && (pecaEscolhida == this.pecaPreta || pecaEscolhida == this.pecaBranca)) {
+            return false;
+        } else {
             return true;
         }
-        return resp;
+    }
+
+    private void capturarGeral() {
+        // Acredito que dá para usar a mesma lógica do laço para captura de peças
+        // A diferença aparente é que a dama pode se mover mais que duas casas
+        var tab = this.tabuleiro.getTabuleiro();
+        char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem], pOponente, dOponente, p;
+        int menor = lOrigem, maior = lDestino, coluna = cOrigem + 1, passo = 1; // Descendo para direita
+        if (lDestino < lOrigem) {
+            menor = lDestino;
+            maior = lOrigem;
+            coluna = cDestino + 1;
+        }
+        if (cDestino < cOrigem) {
+            passo = -1;
+            coluna = cOrigem - 1;
+        }
+
+        pOponente = this.pecaPreta;
+        dOponente = this.damaPreta;
+
+        if (pecaEscolhida == this.damaPreta || pecaEscolhida == this.pecaPreta) {
+            pOponente = this.pecaBranca;
+            dOponente = this.damaBranca;
+        }
+        if (pecaEscolhida == this.pecaPreta || pecaEscolhida == this.pecaBranca) {
+            maior = menor + 2;
+        }
+
+        boolean captura = true;
+        for (int l = menor + 1; l < maior; l++, coluna += passo) {
+            p = tab[l][coluna];
+            if (p != pOponente && p != dOponente && p != ' ') {
+                captura = false;
+            }
+            if (p == pOponente || p == dOponente) {
+                if (p == this.pecaBranca || p == this.damaBranca) {
+                    nPecasBrancas--;
+                } else {
+                    nPecasPretas--;
+                }
+                movePeca();
+                tab[l][coluna] = ' ';
+            }
+        }
+        if (!captura) {
+            System.out.println("Erro na lógica de análise das diagonais.");
+        }
     }
 
     private void viraDama() {
@@ -381,7 +425,14 @@ public class Jogo {
     private boolean andaUmaCasaDiagonal() {
         var pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
         int nextLine, passo = 1;
-        if (pecaEscolhida == this.pecaBranca) {
+        if (pecaEscolhida == this.damaPreta || pecaEscolhida == this.damaBranca) {
+            if (lDestino == lOrigem + 1 && (cDestino == cOrigem + 1 || cDestino == cOrigem - 1)) {
+                return true;
+            } else if (lDestino == lOrigem - 1 && (cDestino == cOrigem + 1 || cDestino == cOrigem - 1)) {
+                return true;
+            }
+            return false;
+        } else if (pecaEscolhida == this.pecaBranca) {
             passo = -1;
         }
         nextLine = lOrigem + passo;
