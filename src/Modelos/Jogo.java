@@ -40,6 +40,7 @@ public class Jogo {
                 System.out.print("\n" + tabuleiro);
                 System.out.printf("Vez de %s, as peças podem ser: %s.%n", jogadores[vez].getNome(), Arrays.toString(jogadores[vez].getPecas()));
                 defineOrigem(jogadores[vez]);
+                deveCapturar = false;
                 System.out.print("\n" + tabuleiro);
                 defineDestino(jogadores[vez]);
                 if (deveCapturar) {
@@ -231,6 +232,9 @@ public class Jogo {
 //        if ((lDestino == lOrigem + 1 || lDestino == lOrigem - 1) && (cDestino == cOrigem - 1 || cDestino == cOrigem + 1)) {
 //            return movimentoSimples();
 //        }
+        if (tabuleiro.getTabuleiro()[lDestino][cDestino] != ' ') {
+            return false;
+        }
         char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
         char pOponente = this.pecaPreta;
         char dOponente = this.damaPreta;
@@ -361,7 +365,8 @@ public class Jogo {
             if (lDestino == lOrigem - 1 && pecaEscolhida == this.pecaPreta) {
                 return false;
             }
-            return tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
+            boolean vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
+            return vago;
         } else {
             return checkDiagonal();
         }
@@ -374,23 +379,23 @@ public class Jogo {
             this.lDestino = lOrigem + 1; // Desce uma linha
             if (cOrigem == 0) { // Analisar só pra direita
                 cDestino = cOrigem + 1;
-                boolean passo1 = !checkCasa(), passo2 = false;
+                livre1 = checkCasa();
                 if (this.lDestino + 1 < tabuleiro.getTabuleiro().length) {
                     lDestino++;
                     cDestino++;
-                    passo2 = !checkCasa();
+                    livre2 = checkCasa();
                 }
-                return passo1 || passo2;
+                return livre1 || livre2;
             } else if (cOrigem == tabuleiro.getTabuleiro().length - 1) {
                 //Analisar só pra esquerda
                 cDestino = cOrigem - 1;
-                boolean passo1 = !checkCasa(), passo2 = false;
+                livre1 = checkCasa();
                 if (this.lDestino + 1 < tabuleiro.getTabuleiro().length) {
                     lDestino++;
                     cDestino--;
-                    passo2 = !checkCasa();
+                    livre2 = checkCasa();
                 }
-                return passo1 || passo2;
+                return livre1 || livre2;
             } else { // Ambas as direções devem ser checadas
                 cDestino = cOrigem + 1; // Para direita
                 livre1 = checkCasa();
@@ -404,32 +409,32 @@ public class Jogo {
                     }
                     if (cOrigem - 2 >= 0) {
                         cDestino = cOrigem - 2;
-                        livre1 = checkCasa();
+                        livre4 = checkCasa();
                     }
                 }
                 return livre1 || livre2 || livre3 || livre4;
             }
-        } else { //                                             Usando Peças Brancas!
+        } else { //                                             Usando Peças Brancas ou damas!
             this.lDestino = lOrigem - 1; // Desce uma linha
             if (cOrigem == 0) { // Analisar só pra direita
                 cDestino = cOrigem + 1;
-                boolean passo1 = !checkCasa(), passo2 = false;
+                livre1 = checkCasa();
                 if (this.lDestino - 1 >= 0) {
                     lDestino--;
                     cDestino++;
-                    passo2 = !checkCasa();
+                    livre2 = checkCasa();
                 }
-                return passo1 || passo2;
+                return livre1 || livre2;
             } else if (cOrigem == tabuleiro.getTabuleiro().length - 1) {
                 //Analisar só pra esquerda
                 this.cDestino = this.cOrigem - 1;
-                boolean passo1 = !checkCasa(), passo2 = false;
+                livre1 = checkCasa();
                 if (this.lDestino - 1 >= 0) {
                     lDestino--;
                     cDestino--;
-                    passo2 = !checkCasa();
+                    livre2 = checkCasa();
                 }
-                return passo1 || passo2;
+                return livre1 || livre2;
             } else { // Ambas as direções devem ser checadas
                 this.cDestino = this.cOrigem + 1; // Para direita
                 livre1 = checkCasa();
