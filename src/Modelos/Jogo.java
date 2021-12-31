@@ -414,7 +414,7 @@ public class Jogo {
                 }
                 return livre1 || livre2 || livre3 || livre4;
             }
-        } else { //                                             Usando Peças Brancas ou damas!
+        } else if (pecaOrigem == this.pecaBranca) { //                          Usando Peças Brancas
             this.lDestino = lOrigem - 1; // Desce uma linha
             if (cOrigem == 0) { // Analisar só pra direita
                 cDestino = cOrigem + 1;
@@ -453,6 +453,9 @@ public class Jogo {
                 }
                 return livre1 || livre2 || livre3 || livre4;
             }
+        } else { // Aqui são damas
+
+            return livre1 || livre2 || livre3 || livre4;
         }
     }
 
