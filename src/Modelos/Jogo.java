@@ -55,6 +55,8 @@ public class Jogo {
                 }
                 nJogadas++;
             }
+            System.out.print("\n" + tabuleiro);
+            sc.nextLine();
             System.out.print("Digite 1 para iniciar um novo jogo: ");
             escolha = sc.nextLine();
             if (!escolha.equals("1")) {
@@ -118,7 +120,7 @@ public class Jogo {
 
     private void defineDestino(Jogador j) {
         String pergunta;
-        boolean vago, movimentoOk, eh_diagonal;
+        boolean vago, eh_diagonal;
         String prefixo = "";
         prefixo = String.format("%s, sua linha de origem é %d e a coluna de origem é %d.\n", j.getNome(), lOrigem, cOrigem);
         do {
@@ -131,7 +133,7 @@ public class Jogo {
             vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
             eh_diagonal = eh_diagonal();
 
-        } while (!(vago && eh_diagonal && movimentoValido()));
+        } while (!(vago && eh_diagonal && /*movimentoValido()*/checkCasa()));
     }
 
     private void movePeca() {
@@ -139,69 +141,100 @@ public class Jogo {
         tabuleiro.getTabuleiro()[lOrigem][cOrigem] = ' ';
     }
 
-    private boolean movimentoValido() {
-        if (andaUmaCasaDiagonal()) {
-            return true; // Anda uma casa na diagonal
-        } else {
-            return possibleCapture2();
-        }
-    }
-
-    private boolean possibleCapture() {
-        char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
-        if ((pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta)) {
-            return movimentoValidoDama();
-        } else {
-            boolean linhaSimples = lDestino == lOrigem + 2 || lDestino == lOrigem - 2;
-            boolean colunaSimples = cDestino == cOrigem + 2 || cDestino == cOrigem - 2;
-            if (linhaSimples && colunaSimples) { // Verificar captura simples
-                // inicialmente vou assumir que a peça é branca...
-                char oponentePeca = this.pecaPreta;
-                char oponenteDama = this.damaPreta;
-                if (pecaEscolhida == this.pecaPreta) {
-                    oponentePeca = this.pecaBranca;
-                    oponenteDama = this.damaBranca;
-                }
-                int vertical = lOrigem - 1, horizontal = cOrigem + 1; // Subindo para direita
-                if (lDestino > lOrigem) {
-                    vertical = lDestino - 1; // Descendo
-                }
-                if (cDestino < cOrigem) {
-                    horizontal = cOrigem - 1; // Indo para esquerda
-                }
-                char oponente = tabuleiro.getTabuleiro()[vertical][horizontal];
-                if (oponente == oponentePeca || oponente == oponenteDama) {
-                    deveCapturar = true;
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-            // Aqui a peça não é dama e está querendo fazer um movimento de dama. Proibido.
-            return false;
-        }
-    }
-
-    private boolean possibleCapture2() {
-        return checkDiagonal();
-    }
-
-    private boolean movimentoValidoDama() {
-        char peca = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
-        if (peca != this.pecaPreta && peca != this.pecaBranca) {
-            // Confirmo que é dama
-            boolean eh_diagonal = (lOrigem + cOrigem) % 2 == (lDestino + cDestino) % 2;
-            boolean vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
-            if (vago && eh_diagonal) {
+    /*
+        private boolean movimentoValido() {
+            if (andaUmaCasaDiagonal()) {
+                return true; // Anda uma casa na diagonal
+            } else {
                 return checkDiagonal();
             }
         }
-        return false;
+
+
+        private boolean possibleCapture() {
+            char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+            if ((pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta)) {
+                return movimentoValidoDama();
+            } else {
+                boolean linhaSimples = lDestino == lOrigem + 2 || lDestino == lOrigem - 2;
+                boolean colunaSimples = cDestino == cOrigem + 2 || cDestino == cOrigem - 2;
+                if (linhaSimples && colunaSimples) { // Verificar captura simples
+                    // inicialmente vou assumir que a peça é branca...
+                    char oponentePeca = this.pecaPreta;
+                    char oponenteDama = this.damaPreta;
+                    if (pecaEscolhida == this.pecaPreta) {
+                        oponentePeca = this.pecaBranca;
+                        oponenteDama = this.damaBranca;
+                    }
+                    int vertical = lOrigem - 1, horizontal = cOrigem + 1; // Subindo para direita
+                    if (lDestino > lOrigem) {
+                        vertical = lDestino - 1; // Descendo
+                    }
+                    if (cDestino < cOrigem) {
+                        horizontal = cOrigem - 1; // Indo para esquerda
+                    }
+                    char oponente = tabuleiro.getTabuleiro()[vertical][horizontal];
+                    if (oponente == oponentePeca || oponente == oponenteDama) {
+                        deveCapturar = true;
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                // Aqui a peça não é dama e está querendo fazer um movimento de dama. Proibido.
+                return false;
+            }
+        }
+
+        private boolean movimentoValidoDama() {
+            char peca = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+            if (peca != this.pecaPreta && peca != this.pecaBranca) {
+                // Confirmo que é dama
+                boolean eh_diagonal = eh_diagonal();
+                boolean vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
+                if (vago && eh_diagonal) {
+                    return checkDiagonal();
+                }
+            }
+            return false;
+        }
+
+
+    private boolean andaUmaCasaDiagonal() {
+        var pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+        int nextLine, passo = 1;
+        if (pecaEscolhida == this.damaPreta || pecaEscolhida == this.damaBranca) {
+            if (lDestino == lOrigem + 1 && (cDestino == cOrigem + 1 || cDestino == cOrigem - 1)) {
+                return true;
+            } else if (lDestino == lOrigem - 1 && (cDestino == cOrigem + 1 || cDestino == cOrigem - 1)) {
+                return true;
+            }
+            return false;
+        } else if (pecaEscolhida == this.pecaBranca) {
+            passo = -1;
+        }
+        nextLine = lOrigem + passo;
+
+        return ((lDestino == nextLine) && (cDestino == cOrigem - passo || cDestino == cOrigem + passo));
     }
 
+    private boolean movimentoSimples() {
+        char peca = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+        if (lDestino == lOrigem + 1 && peca == this.pecaBranca) {
+            return false;
+        }
+        if (lDestino == lOrigem - 1 && peca == this.pecaPreta) {
+            return false;
+        }
+        return true;
+    }
+
+    */
     private boolean checkDiagonal() {
+//        if ((lDestino == lOrigem + 1 || lDestino == lOrigem - 1) && (cDestino == cOrigem - 1 || cDestino == cOrigem + 1)) {
+//            return movimentoSimples();
+//        }
         char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
-//        if (pecaEscolhida == this.damaBranca || pecaEscolhida == this.damaPreta) {
         char pOponente = this.pecaPreta;
         char dOponente = this.damaPreta;
 
@@ -284,8 +317,10 @@ public class Jogo {
             if (p == pOponente || p == dOponente) {
                 if (p == this.pecaBranca || p == this.damaBranca) {
                     nPecasBrancas--;
+                    this.jogadores[1].pontua();
                 } else {
                     nPecasPretas--;
+                    this.jogadores[0].pontua();
                 }
                 movePeca();
                 tab[l][coluna] = ' ';
@@ -312,22 +347,27 @@ public class Jogo {
         return (!mesmaLinhaMesmaColuna && (lOrigem + cOrigem) % 2 == (lDestino + cDestino) % 2);
     }
 
-    private boolean andaUmaCasaDiagonal() {
+    private boolean checkCasa() {
         var pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
-        int nextLine, passo = 1;
         if (pecaEscolhida == this.damaPreta || pecaEscolhida == this.damaBranca) {
             if (lDestino == lOrigem + 1 && (cDestino == cOrigem + 1 || cDestino == cOrigem - 1)) {
                 return true;
             } else if (lDestino == lOrigem - 1 && (cDestino == cOrigem + 1 || cDestino == cOrigem - 1)) {
                 return true;
             }
-            return false;
-        } else if (pecaEscolhida == this.pecaBranca) {
-            passo = -1;
+            return checkDiagonal();
+        } else if ((lDestino == lOrigem + 1 || lDestino == lOrigem - 1) && (cDestino == cOrigem - 1 || cDestino == cOrigem + 1)) {
+            char p = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+            if (lDestino == lOrigem + 1 && p == this.pecaBranca) {
+                return false;
+            }
+            if (lDestino == lOrigem - 1 && p == this.pecaPreta) {
+                return false;
+            }
+            return true;
+        } else {
+            return checkDiagonal();
         }
-        nextLine = lOrigem + passo;
-
-        return ((lDestino == nextLine) && (cDestino == cOrigem - passo || cDestino == cOrigem + passo));
     }
 
     private void setJogadores() {  // Pronto
