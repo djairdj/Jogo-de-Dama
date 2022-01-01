@@ -44,7 +44,7 @@ public class Jogo {
                 System.out.print("\n" + tabuleiro);
                 defineDestino(jogadores[vez]);
                 if (deveCapturar) {
-                    capturarPeca();
+                    capturarGeral();
                     viraDama();
                     deveCapturar = false;
 //                    while (eh_possivelCapturar(jogadores[nJogadas])) {
@@ -57,6 +57,10 @@ public class Jogo {
                 nJogadas++;
             }
             System.out.print("\n" + tabuleiro);
+            String player1 = this.jogadores[0].getNome();
+            String player2 = this.jogadores[1].getNome();
+            String vencedor = this.jogadores[0].getPontos() > this.jogadores[1].getPontos() ? player1 : player2;
+            System.out.println(vencedor + " Ganhou!");
             sc.nextLine();
             System.out.print("Digite 1 para iniciar um novo jogo: ");
             escolha = sc.nextLine();
@@ -376,6 +380,7 @@ public class Jogo {
         char pecaOrigem = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
         boolean livre1 = false, livre2 = false, livre3 = false, livre4 = false;
         if (pecaOrigem == this.pecaPreta) {
+
             this.lDestino = lOrigem + 1; // Desce uma linha
             if (cOrigem == 0) { // Analisar só pra direita
                 cDestino = cOrigem + 1;
