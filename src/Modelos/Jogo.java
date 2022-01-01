@@ -412,6 +412,19 @@ public class Jogo {
                         livre4 = checkCasa();
                     }
                 }
+                if (!(livre1 || livre2 || livre3 || livre4)) {
+                    if (lOrigem - 2 >= 0) {
+                        lDestino = lOrigem - 2;
+                        if (cOrigem + 2 < tabuleiro.getTabuleiro()[lDestino].length) {
+                            cDestino = cOrigem + 2;
+                            livre3 = checkCasa();
+                        }
+                        if (cOrigem - 2 >= 0) {
+                            cDestino = cOrigem - 2;
+                            livre4 = checkCasa();
+                        }
+                    }
+                }
                 return livre1 || livre2 || livre3 || livre4;
             }
         } else if (pecaOrigem == this.pecaBranca) { //                          Usando Peças Brancas
@@ -442,7 +455,7 @@ public class Jogo {
                 livre2 = checkCasa();
                 if (this.lDestino - 1 >= 0) {
                     lDestino--;
-                    if (cOrigem + 2 < tabuleiro.getTabuleiro().length) {
+                    if (cOrigem + 2 < tabuleiro.getTabuleiro()[lDestino].length) {
                         cDestino = cOrigem + 2;
                         livre3 = checkCasa();
                     }
@@ -451,11 +464,25 @@ public class Jogo {
                         livre4 = checkCasa();
                     }
                 }
+                if (!(livre1 || livre2 || livre3 || livre4)) {
+                    if (lOrigem + 2 < tabuleiro.getTabuleiro().length) {
+                        lDestino = lOrigem + 2;
+                        if (cOrigem + 2 < tabuleiro.getTabuleiro()[lDestino].length) {
+                            cDestino = cOrigem + 2;
+                            livre3 = checkCasa();
+                        }
+                        if (cOrigem - 2 >= 0) {
+                            cDestino = cOrigem - 2;
+                            livre4 = checkCasa();
+                        }
+                    }
+                }
                 return livre1 || livre2 || livre3 || livre4;
             }
         } else { // Aqui são damas
 
-            return livre1 || livre2 || livre3 || livre4;
+//            return livre1 || livre2 || livre3 || livre4;
+            return true;
         }
     }
 
