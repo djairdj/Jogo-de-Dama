@@ -233,9 +233,6 @@ public class Jogo {
 
     */
     private boolean checkDiagonal() {
-//        if ((lDestino == lOrigem + 1 || lDestino == lOrigem - 1) && (cDestino == cOrigem - 1 || cDestino == cOrigem + 1)) {
-//            return movimentoSimples();
-//        }
         if (tabuleiro.getTabuleiro()[lDestino][cDestino] != ' ') {
             return false;
         }
@@ -348,8 +345,9 @@ public class Jogo {
     }
 
     private boolean eh_diagonal() {
-        boolean mesmaLinhaMesmaColuna = lOrigem == lDestino || cOrigem == cDestino;
-        return (!mesmaLinhaMesmaColuna && (lOrigem + cOrigem) % 2 == (lDestino + cDestino) % 2);
+        int diflinhas = Math.abs(lOrigem - lDestino);
+        int difColunas = Math.abs(cOrigem - cDestino);
+        return (diflinhas == difColunas);
     }
 
     private boolean checkCasa() {
