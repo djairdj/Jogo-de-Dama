@@ -11,7 +11,7 @@ public class Jogo {
     private int nPecasBrancas;
     private int nPecasPretas;
     private int lOrigem, cOrigem, lDestino, cDestino;
-    private boolean deveCapturar = false;
+    private boolean deveCapturar = false, obrigatorioCapturar = false;
     private char pecaBranca, damaBranca, pecaPreta, damaPreta;
 
     public void defineDadosIniciais() {
@@ -138,10 +138,17 @@ public class Jogo {
         } while (!(vago && eh_diagonal && /*movimentoValido()*/checkCasa()));
     }
 
-    private void movePeca() {
-        tabuleiro.getTabuleiro()[lDestino][cDestino] = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
-        tabuleiro.getTabuleiro()[lOrigem][cOrigem] = ' ';
-    }
+//    private boolean ehPossivelCapturar() {
+//        boolean yes = true;
+//        var tab = this.tabuleiro.getTabuleiro();
+//        for (int i = 0; i < tab.length; i++) {
+//            for (int j = 0; j < tab[i].length; j++) {
+//                if (tab[i][j])
+//            }
+//        }
+//
+//        return yes;
+//    }
 
     /*
         private boolean movimentoValido() {
@@ -333,6 +340,33 @@ public class Jogo {
         }
     }
 
+    private boolean checkCasa() {
+        var pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+        boolean vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
+        if (vago) {
+            if (pecaEscolhida == this.damaPreta || pecaEscolhida == this.damaBranca) {
+                if (lDestino == lOrigem + 1 && (cDestino == cOrigem + 1 || cDestino == cOrigem - 1)) {
+                    return true;
+                } else if (lDestino == lOrigem - 1 && (cDestino == cOrigem + 1 || cDestino == cOrigem - 1)) {
+                    return true;
+                }
+                return checkDiagonal();
+            } else if ((lDestino == lOrigem + 1 || lDestino == lOrigem - 1) && (cDestino == cOrigem - 1 || cDestino == cOrigem + 1)) {
+
+                if (lDestino == lOrigem + 1 && pecaEscolhida == this.pecaBranca) {
+                    return false;
+                }
+                if (lDestino == lOrigem - 1 && pecaEscolhida == this.pecaPreta) {
+                    return false;
+                }
+                return true;
+            } else {
+                return checkDiagonal();
+            }
+        }
+        return false;
+    }
+
     private void viraDama() {
         char peca = tabuleiro.getTabuleiro()[lDestino][cDestino];
 
@@ -344,34 +378,9 @@ public class Jogo {
         }
     }
 
-    private boolean eh_diagonal() {
-        int diflinhas = Math.abs(lOrigem - lDestino);
-        int difColunas = Math.abs(cOrigem - cDestino);
-        return (diflinhas == difColunas);
-    }
-
-    private boolean checkCasa() {
-        var pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
-        if (pecaEscolhida == this.damaPreta || pecaEscolhida == this.damaBranca) {
-            if (lDestino == lOrigem + 1 && (cDestino == cOrigem + 1 || cDestino == cOrigem - 1)) {
-                return true;
-            } else if (lDestino == lOrigem - 1 && (cDestino == cOrigem + 1 || cDestino == cOrigem - 1)) {
-                return true;
-            }
-            return checkDiagonal();
-        } else if ((lDestino == lOrigem + 1 || lDestino == lOrigem - 1) && (cDestino == cOrigem - 1 || cDestino == cOrigem + 1)) {
-
-            if (lDestino == lOrigem + 1 && pecaEscolhida == this.pecaBranca) {
-                return false;
-            }
-            if (lDestino == lOrigem - 1 && pecaEscolhida == this.pecaPreta) {
-                return false;
-            }
-            boolean vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
-            return vago;
-        } else {
-            return checkDiagonal();
-        }
+    private void movePeca() {
+        tabuleiro.getTabuleiro()[lDestino][cDestino] = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+        tabuleiro.getTabuleiro()[lOrigem][cOrigem] = ' ';
     }
 
     private boolean pecaLivre() {
@@ -489,17 +498,10 @@ public class Jogo {
         }
     }
 
-    private void setJogadores() {  // Pronto
-        String name1, name2;
-        System.out.print("Informe o nome do primeiro jogador: ");
-        name1 = sc.nextLine();
-        name1 = name1.substring(0, 1).toUpperCase() + name1.substring(1);
-        System.out.print("Informe o nome do segundo jogador: ");
-        name2 = sc.nextLine();
-        name2 = name2.substring(0, 1).toUpperCase() + name2.substring(1);
-        int sorteio = (int) Math.round(Math.random()) % 2;
-        jogadores[sorteio] = new Jogador(name1, Peca.values()[sorteio], Peca.values()[sorteio + 2]);
-        jogadores[(sorteio + 1) % 2] = new Jogador(name2, Peca.values()[(sorteio + 1) % 2], Peca.values()[(sorteio + 1) % 2 + 2]);
+    private boolean eh_diagonal() {
+        int diflinhas = Math.abs(lOrigem - lDestino);
+        int difColunas = Math.abs(cOrigem - cDestino);
+        return (diflinhas == difColunas);
     }
 
     private int validaPonto(String mensagem, int limite) {
@@ -514,6 +516,19 @@ public class Jogo {
             }
         }
         return n;
+    }
+
+    private void setJogadores() {  // Pronto
+        String name1, name2;
+        System.out.print("Informe o nome do primeiro jogador: ");
+        name1 = sc.nextLine();
+        name1 = name1.substring(0, 1).toUpperCase() + name1.substring(1);
+        System.out.print("Informe o nome do segundo jogador: ");
+        name2 = sc.nextLine();
+        name2 = name2.substring(0, 1).toUpperCase() + name2.substring(1);
+        int sorteio = (int) Math.round(Math.random()) % 2;
+        jogadores[sorteio] = new Jogador(name1, Peca.values()[sorteio], Peca.values()[sorteio + 2]);
+        jogadores[(sorteio + 1) % 2] = new Jogador(name2, Peca.values()[(sorteio + 1) % 2], Peca.values()[(sorteio + 1) % 2 + 2]);
     }
 
     public String toString() {
