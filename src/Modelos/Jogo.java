@@ -384,10 +384,9 @@ public class Jogo {
     }
 
     private boolean pecaLivre() {
-        char pecaOrigem = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+        char pecaOrigem = this.tabuleiro.getTabuleiro()[this.lOrigem][this.cOrigem];
         boolean livre1 = false, livre2 = false, livre3 = false, livre4 = false;
         if (pecaOrigem == this.pecaPreta) {
-
             this.lDestino = lOrigem + 1; // Desce uma linha
             if (cOrigem == 0) { // Analisar só pra direita
                 cDestino = cOrigem + 1;
@@ -439,7 +438,7 @@ public class Jogo {
                 }
                 return livre1 || livre2 || livre3 || livre4;
             }
-        } else if (pecaOrigem == this.pecaBranca) { //                          Usando Peças Brancas
+        } else if (pecaOrigem == this.pecaBranca) { //                  Usando Peças Brancas
             this.lDestino = lOrigem - 1; // Desce uma linha
             if (cOrigem == 0) { // Analisar só pra direita
                 cDestino = cOrigem + 1;
@@ -493,9 +492,49 @@ public class Jogo {
             }
         } else { // Aqui são damas
 
-//            return livre1 || livre2 || livre3 || livre4;
-            return true;
+            boolean diagRightUp = false, diagRightDown = false, diagLeftUp = false, diagLeftDown = false;
+            char[][] tab = this.tabuleiro.getTabuleiro();
+            int lastLinha = tab.length - 1, lastColuna = tab[0].length - 1;
+
+            this.lDestino = this.lOrigem;
+            this.cDestino = this.cOrigem;
+            while (this.cDestino <= lastColuna && this.lDestino <= lastLinha) { // Analisar down lado direito
+                diagRightDown = checkCasa();
+                if (diagRightDown) break;
+                this.lDestino++;
+                this.cDestino++;
+            }
+
+            this.lDestino = this.lOrigem;
+            this.cDestino = this.cOrigem;
+            while (cDestino >= 0 && lDestino <= lastLinha) { // Analisar down lado esquerdo
+                diagLeftDown = checkCasa();
+                if (diagLeftDown) break;
+                this.lDestino++;
+                this.cDestino--;
+            }
+
+            this.lDestino = this.lOrigem;
+            this.cDestino = this.cOrigem;
+            while (cDestino <= lastColuna && lDestino >= 0) {// Analisar up lado direito
+                diagRightUp = checkCasa();
+                if (diagRightUp) break;
+                this.lDestino--;
+                this.cDestino++;
+            }
+
+            this.lDestino = this.lOrigem;
+            this.cDestino = this.cOrigem;
+            while (cDestino <= 0 && lDestino >= 0) { // Analisar up esquerdo
+                diagLeftUp = checkCasa();
+                if (diagLeftUp) break;
+                this.lDestino--;
+                this.cDestino--;
+            }
+
+            return diagRightDown || diagLeftDown || diagRightUp || diagLeftUp;
         }
+
     }
 
     private boolean eh_diagonal() {
