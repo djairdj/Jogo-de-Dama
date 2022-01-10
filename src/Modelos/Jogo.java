@@ -138,17 +138,19 @@ public class Jogo {
         } while (!(vago && eh_diagonal && /*movimentoValido()*/checkCasa()));
     }
 
-//    private boolean ehPossivelCapturar() {
-//        boolean yes = true;
-//        var tab = this.tabuleiro.getTabuleiro();
-//        for (int i = 0; i < tab.length; i++) {
-//            for (int j = 0; j < tab[i].length; j++) {
-//                if (tab[i][j])
-//            }
-//        }
-//
-//        return yes;
-//    }
+    /*
+        private boolean ehPossivelCapturar() {
+            boolean yes = true;
+            var tab = this.tabuleiro.getTabuleiro();
+            for (int i = 0; i < tab.length; i++) {
+                for (int j = 0; j < tab[i].length; j++) {
+                    if (tab[i][j])
+                }
+            }
+
+            return yes;
+        }
+    */
 
     /*
         private boolean movimentoValido() {
@@ -491,7 +493,6 @@ public class Jogo {
                 return livre1 || livre2 || livre3 || livre4;
             }
         } else { // Aqui são damas
-
             boolean diagRightUp = false, diagRightDown = false, diagLeftUp = false, diagLeftDown = false;
             char[][] tab = this.tabuleiro.getTabuleiro();
             int lastLinha = tab.length - 1, lastColuna = tab[0].length - 1;
