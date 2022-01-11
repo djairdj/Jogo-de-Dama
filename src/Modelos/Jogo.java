@@ -526,7 +526,7 @@ public class Jogo {
 
             this.lDestino = this.lOrigem;
             this.cDestino = this.cOrigem;
-            while (cDestino <= 0 && lDestino >= 0) { // Analisar up esquerdo
+            while (cDestino >= 0 && lDestino >= 0) { // Analisar up esquerdo
                 diagLeftUp = checkCasa();
                 if (diagLeftUp) break;
                 this.lDestino--;
