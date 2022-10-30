@@ -1,13 +1,14 @@
 package Modelos;
 
 public class Jogador {
-
     private final Peca[] peca;
     private final String nome;
     private int pontos;
 
-    public Jogador(String name, Peca... peca) {
-        this.peca = peca;
+    public Jogador(String name, Peca peca, Peca dama) {
+        this.peca = new Peca[2];
+        this.peca[0] = peca;
+        this.peca[1] = dama;
         this.nome = name;
         this.pontos = 0;
     }

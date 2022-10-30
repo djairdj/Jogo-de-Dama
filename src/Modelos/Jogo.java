@@ -354,7 +354,6 @@ public class Jogo {
                 }
                 return checkDiagonal();
             } else if ((lDestino == lOrigem + 1 || lDestino == lOrigem - 1) && (cDestino == cOrigem - 1 || cDestino == cOrigem + 1)) {
-
                 if (lDestino == lOrigem + 1 && pecaEscolhida == this.pecaBranca) {
                     return false;
                 }
@@ -440,7 +439,7 @@ public class Jogo {
                 }
                 return livre1 || livre2 || livre3 || livre4;
             }
-        } else if (pecaOrigem == this.pecaBranca) { //                  Usando Peças Brancas
+        } else if (pecaOrigem == this.pecaBranca) { // Usando Peças Brancas
             this.lDestino = lOrigem - 1; // Desce uma linha
             if (cOrigem == 0) { // Analisar só pra direita
                 cDestino = cOrigem + 1;
@@ -452,7 +451,7 @@ public class Jogo {
                 }
                 return livre1 || livre2;
             } else if (cOrigem == tabuleiro.getTabuleiro().length - 1) {
-                //Analisar só pra esquerda
+                // Analisar só pra esquerda
                 this.cDestino = this.cOrigem - 1;
                 livre1 = checkCasa();
                 if (this.lDestino - 1 >= 0) {

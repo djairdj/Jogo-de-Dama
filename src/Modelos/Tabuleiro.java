@@ -2,7 +2,6 @@ package Modelos;
 
 public class Tabuleiro {
     private final char[][] tabuleiro;
-
     private final char pedraBranca, pedraPreta;
 
     public Tabuleiro(char pecaBranca, char pecaPreta) {
