@@ -31,10 +31,12 @@ public class Jogo {
         System.out.println("Bem vindo ao jogo de dama.");
         System.out.print("Caso queira iniciar, digite 1: ");
         String escolha = sc.nextLine();
+
         while (escolha.equals("1")) {
             // A variável nJogada já vale 0 (inicialmente) e cada mudança de jogador ela deve ser incrementada.
             int vez;
             defineDadosIniciais();
+
             while (nPecasBrancas != 0 && nPecasPretas != 0) {
                 vez = nJogadas % 2;
                 System.out.print("\n" + tabuleiro);
@@ -72,6 +74,7 @@ public class Jogo {
 
     private void capturarPeca() {
         char peca = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
+
         if (peca == this.damaBranca || peca == this.damaPreta) {
             capturarGeral();
         } else {
@@ -104,8 +107,9 @@ public class Jogo {
     }
 
     private void defineOrigem(Jogador j) {
-        boolean equivalente, pecaLivre = false;
+        boolean equivalente, pecaLivre;
         String pergunta;
+
         do {
             pergunta = String.format("%s, escolha uma linha de origem: ", j.getNome());
             this.lOrigem = validaPonto(pergunta, this.tabuleiro.getTabuleiro().length);
@@ -123,8 +127,9 @@ public class Jogo {
     private void defineDestino(Jogador j) {
         String pergunta;
         boolean vago, eh_diagonal;
-        String prefixo = "";
+        String prefixo;
         prefixo = String.format("%s, sua linha de origem é %d e a coluna de origem é %d.\n", j.getNome(), lOrigem, cOrigem);
+
         do {
             pergunta = String.format("%s, escolha uma linha de destino: ", j.getNome());
             this.lDestino = validaPonto(prefixo + pergunta, this.tabuleiro.getTabuleiro().length);
@@ -297,6 +302,7 @@ public class Jogo {
         var tab = this.tabuleiro.getTabuleiro();
         char pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem], pOponente, dOponente, p;
         int menor = lOrigem, maior = lDestino, coluna = cOrigem + 1, passo = 1; // Descendo para direita
+
         if (lDestino < lOrigem) { // Subindo
             maior = lOrigem;
             menor = lDestino;
@@ -345,6 +351,7 @@ public class Jogo {
     private boolean checkCasa() {
         var pecaEscolhida = tabuleiro.getTabuleiro()[lOrigem][cOrigem];
         boolean vago = tabuleiro.getTabuleiro()[lDestino][cDestino] == ' ';
+
         if (vago) {
             if (pecaEscolhida == this.damaPreta || pecaEscolhida == this.damaBranca) {
                 if (lDestino == lOrigem + 1 && (cDestino == cOrigem + 1 || cDestino == cOrigem - 1)) {
@@ -386,7 +393,7 @@ public class Jogo {
 
     private boolean pecaLivre() {
         char pecaOrigem = this.tabuleiro.getTabuleiro()[this.lOrigem][this.cOrigem];
-        boolean livre1 = false, livre2 = false, livre3 = false, livre4 = false;
+        boolean livre1, livre2 = false, livre3 = false, livre4 = false;
         if (pecaOrigem == this.pecaPreta) {
             this.lDestino = lOrigem + 1; // Desce uma linha
             if (cOrigem == 0) { // Analisar só pra direita
